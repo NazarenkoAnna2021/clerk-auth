@@ -6,24 +6,29 @@ import { Button } from '@/components/nativewindui/Button'
 import { Text } from '@/components/nativewindui/Text'
 import { getStyles } from './styles'
 import { useSignUpVerification } from '../../presenters/useSignUpVerification'
+import { ActivityIndicator } from 'react-native'
+import { useUiContext } from '@/UIProvider'
 
 export const SignUpVerificationView: FC = () => {
+    const { colors } = useUiContext();
     const styles = useMemo(() => getStyles(), []);
-    const { router, error, code, setCode, onVerifyPress } = useSignUpVerification();
+    const { router, isLoading, error, code, setCode, onVerifyPress } = useSignUpVerification();
 
     return (
         <ScreenContainer headerComponent={<MainHeader title='Sign up' onGoBack={router.back} />}>
             <MainInput
-                enableErrorMessage
                 autoCapitalize="none"
                 value={code}
                 placeholder="Code"
                 onChangeText={setCode}
                 containerStyle={styles.input}
-                error={error}
             />
-            <Button onPress={onVerifyPress} style={styles.button} >
-                <Text>Verify</Text>
+            <Text style={{ color: colors.destructive, textAlign: 'center', }}>{error}</Text>
+            <Button disabled={isLoading} variant={isLoading ? 'tonal' : 'primary'} onPress={onVerifyPress} style={styles.button} >
+                {isLoading
+                    ? <ActivityIndicator color={colors.primary} size={'small'} />
+                    : <Text>Verify</Text>
+                }
             </Button>
         </ScreenContainer>
     )

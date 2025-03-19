@@ -6,7 +6,7 @@ export default function AuthRoutesLayout() {
 
     if (isSignedIn) {
         return <Redirect href={'/'} />
-    }
+    };
 
-    return <Stack screenOptions={{ headerShown: false }} />
+    return <Stack initialRouteName={'authentication'} screenOptions={{ headerShown: false }} />
 }

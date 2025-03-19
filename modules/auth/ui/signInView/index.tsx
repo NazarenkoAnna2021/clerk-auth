@@ -8,11 +8,12 @@ import { getStyles } from './styles'
 import { MainLink } from '@/components/MainLink'
 import { useSignIn } from '../../presenters/useSignIn'
 import { useUiContext } from '@/UIProvider'
+import { ActivityIndicator } from 'react-native'
 
 export const SignInView = () => {
     const { colors } = useUiContext();
     const styles = useMemo(() => getStyles(), []);
-    const { router, error, emailAddress, password, setEmailAddress, setPassword, onSignInPress } = useSignIn();
+    const { router, isLoading, error, emailAddress, password, setEmailAddress, setPassword, onSignIn } = useSignIn();
 
     return (
         <ScreenContainer headerComponent={<MainHeader onGoBack={router.back} title='Sign in' />}>
@@ -20,6 +21,7 @@ export const SignInView = () => {
                 autoCapitalize="none"
                 value={emailAddress}
                 placeholder="Email"
+                keyboardType={'email-address'}
                 onChangeText={setEmailAddress}
                 containerStyle={styles.input}
                 error={error}
@@ -31,10 +33,14 @@ export const SignInView = () => {
                 onChangeText={setPassword}
                 containerStyle={styles.input}
                 error={error}
+                secureTextEntry
             />
-            <Text style={{ color: colors.destructive, textAlign:'center', }}>{error}</Text>
-            <Button style={styles.button} onPress={onSignInPress} >
-                <Text>Confirm</Text>
+            <Text style={{ color: colors.destructive, textAlign: 'center', }}>{error}</Text>
+            <Button disabled={isLoading} variant={isLoading ? 'tonal' : 'primary'} style={styles.button} onPress={onSignIn} >
+                {isLoading
+                    ? <ActivityIndicator color={colors.primary} size={'small'} />
+                    : <Text>Confirm</Text>
+                }
             </Button>
             <MainLink title={'Don\'t have an account?'} linkText={'Sign up'} href={'/sign-up'} />
         </ScreenContainer>

@@ -1,5 +1,5 @@
 import { useFonts } from 'expo-font';
-import { Slot } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
@@ -11,13 +11,8 @@ import { useColorScheme, useInitialAndroidBarSync } from '../UIProvider/theme/us
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UIProvider } from '@/UIProvider';
 import { tokenCache } from '@/cache';
+export { ErrorBoundary } from 'expo-router';
 
-export {
-    // Catch any errors thrown by the Layout component.
-    ErrorBoundary,
-} from 'expo-router';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -35,17 +30,17 @@ export default function RootLayout() {
 
     if (!loaded) {
         return null;
-    }
+    };
 
     return (
-        <ClerkProvider  tokenCache={tokenCache} publishableKey={'pk_test_bXV0dWFsLXRyb3V0LTYxLmNsZXJrLmFjY291bnRzLmRldiQ'}>
+        <ClerkProvider tokenCache={tokenCache} publishableKey={'pk_test_bXV0dWFsLXRyb3V0LTYxLmNsZXJrLmFjY291bnRzLmRldiQ'}>
             <StatusBar
                 key={`root-status-bar-${isDarkColorScheme ? 'light' : 'dark'}`}
                 style={isDarkColorScheme ? 'light' : 'dark'}
             />
             <SafeAreaProvider>
                 <UIProvider>
-                    <Slot />
+                    <Stack screenOptions={{ headerShown: false }} />
                 </UIProvider>
             </SafeAreaProvider>
         </ClerkProvider>

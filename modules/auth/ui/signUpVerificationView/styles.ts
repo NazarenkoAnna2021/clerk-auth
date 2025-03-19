@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 
 export const getStyles = () => (StyleSheet.create({
     input: {
-        marginBottom: scaleVertical(10),
         marginHorizontal: scaleHorizontal(20)
     },
     button: {

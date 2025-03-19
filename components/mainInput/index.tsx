@@ -1,9 +1,8 @@
-import React, { FC, memo, useEffect, useMemo, useState } from "react";
+import React, { FC, memo, useMemo, useState } from "react";
 import { TextInput, TextInputProps, Text, View, ViewStyle, TouchableOpacity, NativeSyntheticEvent, TextInputFocusEventData } from "react-native";
 import { getStyles } from "./styles";
 import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
-import { useColorScheme } from "nativewind";
-import { scaleVertical, scaleFontSize, scaleHorizontal } from "@/Utils";
+import { scaleVertical } from "@/Utils";
 import { EyeIcon } from "@/assets/icons/EyeIcon";
 import { useUiContext } from "@/UIProvider";
 
@@ -70,13 +69,11 @@ export const MainInput: FC<IProps> = memo(({ type = 'main', enableErrorMessage =
         setIsFocused(true);
         onFocus?.(e);
         animatePlaceholderOnFocus();
-        // onPlaceholderStyleChange(props?.value);
     };
     const handleOnBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
         setIsFocused(false);
         onBlur?.(e);
         animatePlaceholderOnBlur();
-        // onPlaceholderStyleChange(props?.value);
     };
 
     return (
