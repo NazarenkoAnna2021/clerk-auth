@@ -12,10 +12,13 @@ export const getStyles = () => (StyleSheet.create({
     },
     addPhoneWrapper: {
         paddingHorizontal: scaleHorizontal(24),
-        paddingVertical:scaleVertical(20),
-        borderTopWidth: 1,
+        paddingVertical: scaleVertical(20),
     },
     input: {
-        marginBottom:scaleVertical(20),
+        marginBottom: scaleVertical(20),
     },
+    button: {
+        marginHorizontal: scaleHorizontal(24),
+        marginBottom:scaleVertical(20)
+    }
 }));

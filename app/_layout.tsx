@@ -11,6 +11,8 @@ import { useColorScheme, useInitialAndroidBarSync } from '../UIProvider/theme/us
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UIProvider } from '@/UIProvider';
 import { tokenCache } from '@/cache';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 export { ErrorBoundary } from 'expo-router';
 
 SplashScreen.preventAutoHideAsync();
@@ -40,7 +42,11 @@ export default function RootLayout() {
             />
             <SafeAreaProvider>
                 <UIProvider>
-                    <Stack screenOptions={{ headerShown: false }} />
+                    <GestureHandlerRootView style={{ flex: 1 }}>
+                        <BottomSheetModalProvider>
+                            <Stack screenOptions={{ headerShown: false }} />
+                        </BottomSheetModalProvider>
+                    </GestureHandlerRootView>
                 </UIProvider>
             </SafeAreaProvider>
         </ClerkProvider>

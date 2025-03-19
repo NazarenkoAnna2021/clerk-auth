@@ -10,10 +10,13 @@ import { getStyles } from "./styles";
 import { sqliteService } from "@/lib/SQLite/SQLite";
 import { phonesModel } from "../../entities/PhonesModel";
 import { MainInput } from "@/components/mainInput";
+import { Sheet } from "@/components/nativewindui/Sheet";
+import { scaleHorizontal, scaleVertical } from "@/Utils";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
 
 export const HomeView: FC = () => {
     const styles = useMemo(() => getStyles(), []);
-    const { newPhone, phones, onAddPhone } = useHome();
+    const { bottomSheetModalRef, newPhone, phones, onOpenSheet, onAddPhone } = useHome();
 
     const keyExtractor = useCallback((item: IPhone) => (item.id.toString()), []);
 
@@ -28,23 +31,28 @@ export const HomeView: FC = () => {
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}
             />
-            <View style={styles.addPhoneWrapper}>
-                <MainInput
-                    placeholder={'Name'}
-                    value={newPhone?.name}
-                    onChangeText={(name) => { phonesModel.newPhone = { ...newPhone, name } }}
-                    containerStyle={styles.input}
-                />
-                <MainInput
-                    placeholder={'Phone'}
-                    value={newPhone?.phone?.toString()}
-                    onChangeText={(phone) => { phonesModel.newPhone = { ...newPhone, phone: phone ? Number(phone) : null } }}
-                    containerStyle={styles.input}
-                />
-                <Button onPress={onAddPhone} disabled={!newPhone.name || !newPhone.phone} >
-                    <Text>Add phone</Text>
-                </Button>
-            </View>
+            <Button style={styles.button} onPress={onOpenSheet}>
+                <Text>Add phone</Text>
+            </Button>
+            <Sheet ref={bottomSheetModalRef} snapPoints={[450, 500, 600]}>
+                <BottomSheetView style={styles.addPhoneWrapper}>
+                    <MainInput
+                        placeholder={'Name'}
+                        value={newPhone?.name}
+                        onChangeText={(name) => { phonesModel.newPhone = { ...newPhone, name } }}
+                        containerStyle={styles.input}
+                    />
+                    <MainInput
+                        placeholder={'Phone'}
+                        value={newPhone?.phone?.toString()}
+                        onChangeText={(phone) => { phonesModel.newPhone = { ...newPhone, phone: phone ? Number(phone) : null } }}
+                        containerStyle={styles.input}
+                    />
+                    <Button onPress={onAddPhone} disabled={!newPhone.name || !newPhone.phone} >
+                        <Text>Add phone</Text>
+                    </Button>
+                </BottomSheetView>
+            </Sheet>
         </ScreenContainer>
     )
 };
