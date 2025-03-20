@@ -7,21 +7,18 @@ import { Text } from "@/components/nativewindui/Text";
 import { MainHeader } from "@/components/mainHeader";
 import { Button } from "@/components/nativewindui/Button";
 import { getStyles } from "./styles";
-import { sqliteService } from "@/lib/SQLite/SQLite";
 import { phonesModel } from "../../entities/PhonesModel";
-import { MainInput } from "@/components/mainInput";
-import { Sheet } from "@/components/nativewindui/Sheet";
-import { scaleHorizontal, scaleVertical } from "@/Utils";
-import { BottomSheetView } from "@gorhom/bottom-sheet";
+import { phonesService } from "../../entities/PhonesService";
+import { PhoneInputsSheet } from "../components/phoneInputsSheet";
 
 export const HomeView: FC = () => {
     const styles = useMemo(() => getStyles(), []);
-    const { bottomSheetModalRef, newPhone, phones, onOpenSheet, onAddPhone } = useHome();
+    const { addPhoneRef, editPhoneRef, phones, onOpenPhoneAdding, onAddPhone, onOpenPhoneEditing, onEditPhone } = useHome();
 
     const keyExtractor = useCallback((item: IPhone) => (item.id.toString()), []);
 
     const renderItem = useCallback(({ item }: { item: IPhone }) => (
-        <PhoneItem item={item} />
+        <PhoneItem item={item} onEdit={onOpenPhoneEditing} />
     ), [])
 
     return (
@@ -31,50 +28,45 @@ export const HomeView: FC = () => {
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}
             />
-            <Button style={styles.button} onPress={onOpenSheet}>
+            <Button style={styles.button} onPress={onOpenPhoneAdding}>
                 <Text>Add phone</Text>
             </Button>
-            <Sheet ref={bottomSheetModalRef} snapPoints={[450, 500, 600]}>
-                <BottomSheetView style={styles.addPhoneWrapper}>
-                    <MainInput
-                        placeholder={'Name'}
-                        value={newPhone?.name}
-                        onChangeText={(name) => { phonesModel.newPhone = { ...newPhone, name } }}
-                        containerStyle={styles.input}
-                    />
-                    <MainInput
-                        placeholder={'Phone'}
-                        value={newPhone?.phone?.toString()}
-                        onChangeText={(phone) => { phonesModel.newPhone = { ...newPhone, phone: phone ? Number(phone) : null } }}
-                        containerStyle={styles.input}
-                    />
-                    <Button onPress={onAddPhone} disabled={!newPhone.name || !newPhone.phone} >
-                        <Text>Add phone</Text>
-                    </Button>
-                </BottomSheetView>
-            </Sheet>
+            <PhoneInputsSheet bottomSheetModalRef={addPhoneRef} buttonTitle={'Add phone'} onPress={onAddPhone} />
+            <PhoneInputsSheet bottomSheetModalRef={editPhoneRef} buttonTitle={'Edit phone'} onPress={onEditPhone} />
         </ScreenContainer>
     )
 };
 
 interface IProps {
     item: IPhone;
+    onEdit: (item: IPhone) => void;
 };
 
-const PhoneItem: FC<IProps> = memo(({ item }) => {
+const PhoneItem: FC<IProps> = memo(({ item, onEdit }) => {
     const styles = useMemo(() => getStyles(), []);
 
     const onDelete = async () => {
-        const phones = await sqliteService.deletePhone(item.id);
-        phonesModel.phones = phones;
+        const phones = await phonesService.delete(item.id);
+        if (phones) {
+            phonesModel.phones = phones;
+        };
+    };
+
+    const handelOnEdit = () => {
+        onEdit(item);
     };
 
     return (
-        <View style={styles.item}>
-            <Text>{item.name}: {item.phone}</Text>
-            <Button onPress={onDelete}>
-                <Text>Delete</Text>
-            </Button>
+        <View style={styles.item} >
+            <Text style={{ flex: 1 }}>{item.name}: {item.phone}</Text>
+            <View style={{ flexDirection: 'row' }}>
+                <Button variant={'plain'} onPress={handelOnEdit}>
+                    <Text>Edit</Text>
+                </Button>
+                <Button variant={'plain'} onPress={onDelete}>
+                    <Text>Delete</Text>
+                </Button>
+            </View>
         </View>
     )
 });
